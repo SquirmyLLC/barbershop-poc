@@ -25,7 +25,7 @@ npm run build    # production build in dist/
 
 The brand name "Fresh Cut Co.", prices, shop addresses, reviews and mixtapes are placeholders in `src/data.js` and `index.html`. The reviews are samples written for layout and must be replaced with real ones before launch.
 
-The videos in `public/videos/` are rendered 3D loops, made by `npm run videos` (`tools/render-videos.mjs`, which needs ffmpeg). Swap in real shop footage by replacing `pole.mp4`, `scissors.mp4` and `strands.mp4` and their `.jpg` posters. Use short 1280x720 H.264 clips with no audio, 2 MB or less each.
+The "Every cut is a craft" video (`reel.mp4`) is a slideshow of the shop photos made by `bash tools/make-reel.sh`; edit the `SHOTS` list there to change photos or crops. The other videos in `public/videos/` are rendered 3D loops, made by `npm run videos` (`tools/render-videos.mjs`, which needs ffmpeg). Swap in real shop footage by replacing `pole.mp4`, `scissors.mp4` and `strands.mp4` and their `.jpg` posters. Use short 1280x720 H.264 clips with no audio, 2 MB or less each.
 
 ## Design tooling
 
