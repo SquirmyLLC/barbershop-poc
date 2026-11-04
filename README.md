@@ -42,4 +42,4 @@ python3 .claude/skills/ui-ux-pro-max/scripts/search.py "3d hero performance mobi
 
 ### Photos
 
-Shop photos are free [Unsplash](https://unsplash.com) images (Unsplash License; paid Unsplash+ photos are not used), listed with photographer credits in `src/data.js` and loaded straight from Unsplash's image CDN. Replace them with photos of the real shop when you have them.
+Shop photos are free [Unsplash](https://unsplash.com) images (Unsplash License; paid Unsplash+ photos are not used), saved in `public/photos/` (resized for the web) and listed with photographer credits in `src/data.js`. Replace them with photos of the real shop when you have them.

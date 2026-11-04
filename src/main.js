@@ -31,7 +31,7 @@ const half = Math.ceil(REVIEWS.length / 2);
 });
 
 $('[data-loc-grid]').innerHTML = SHOPS.map((s) => `<li><a class="loc" href="#top" data-book data-shop="${s.name}">
-  <img class="loc-img" src="${photoUrl(s.photo, 800)}" alt="" loading="lazy" decoding="async" width="800" height="533" />
+  <img class="loc-img" src="${photoUrl(s.photo)}" alt="" loading="lazy" decoding="async" width="800" height="533" />
   <h3>${s.name}</h3>
   <div class="loc-meta"><span>${s.address}<br/>${s.hours}</span><span class="loc-open">Open now</span></div>
 </a></li>`).join('');
@@ -52,8 +52,8 @@ $('[data-year]').textContent = new Date().getFullYear();
 $('[data-gallery-track]').innerHTML = GALLERY.map((g, i) => {
   const p = PHOTOS[g.photo];
   return `<figure class="g-card${i % 2 ? ' low' : ''}">
-    <div class="g-frame"><img src="${photoUrl(g.photo, 1400)}" alt="${p.alt}" loading="lazy" decoding="async" width="1400" height="933" /></div>
-    <figcaption><span>${g.caption}</span><a href="${p.page}?utm_source=fresh_cut_co&utm_medium=referral" target="_blank" rel="noopener">Photo: ${p.by}</a></figcaption>
+    <div class="g-frame"><img src="${photoUrl(g.photo)}" alt="${p.alt}" loading="lazy" decoding="async" width="1400" height="933" /></div>
+    <figcaption><span>${g.caption}</span><a href="${p.page}" target="_blank" rel="noopener">Photo: ${p.by}</a></figcaption>
   </figure>`;
 }).join('');
 const used = new Set([...GALLERY.map((g) => g.photo), ...SHOPS.map((s) => s.photo), ...Object.values(SERVICE_PHOTOS)]);
@@ -157,7 +157,7 @@ if (!reduced) {
 /* ---------------- Service hover photo preview (follows the cursor) ---------------- */
 const box = $('[data-preview-box]');
 if (finePointer && !reduced) {
-  box.innerHTML = Object.entries(SERVICE_PHOTOS).map(([svc, key]) => `<img src="${photoUrl(key, 640)}" alt="" data-for="${svc}" loading="lazy" decoding="async" width="640" height="480" />`).join('');
+  box.innerHTML = Object.entries(SERVICE_PHOTOS).map(([svc, key]) => `<img src="${photoUrl(key)}" alt="" data-for="${svc}" loading="lazy" decoding="async" width="640" height="480" />`).join('');
   const imgs = $$('img', box);
   const xTo = gsap.quickTo(box, 'x', { duration: 0.5, ease: 'power3' });
   const yTo = gsap.quickTo(box, 'y', { duration: 0.5, ease: 'power3' });
