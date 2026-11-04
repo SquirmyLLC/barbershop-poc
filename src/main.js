@@ -156,25 +156,45 @@ if (!reduced) {
 
 /* ---------------- Service hover photo preview (follows the cursor) ---------------- */
 const box = $('[data-preview-box]');
+const dlg = $('[data-booking]');
 if (finePointer && !reduced) {
   box.innerHTML = Object.entries(SERVICE_PHOTOS).map(([svc, key]) => `<img src="${photoUrl(key)}" alt="" data-for="${svc}" loading="lazy" decoding="async" width="640" height="480" />`).join('');
   const imgs = $$('img', box);
   const xTo = gsap.quickTo(box, 'x', { duration: 0.5, ease: 'power3' });
   const yTo = gsap.quickTo(box, 'y', { duration: 0.5, ease: 'power3' });
   const list = $('[data-services]');
-  list.addEventListener('mouseenter', () => imgs.forEach((i) => { i.loading = 'eager'; }), { once: true });
-  list.addEventListener('mousemove', (e) => { xTo(e.clientX); yTo(e.clientY); });
-  $$('button', list).forEach((b) => {
-    b.addEventListener('mouseenter', () => {
-      imgs.forEach((i) => {
-        const on = i.dataset.for === b.dataset.service;
-        i.classList.toggle('on', on);
-        if (on) gsap.fromTo(i, { scale: 1.25 }, { scale: 1, duration: 0.8, ease: 'power3.out' });
-      });
-      gsap.to(box, { opacity: 1, scale: 1, rotate: gsap.utils.random(-6, 6), duration: 0.45, ease: 'back.out(1.6)' });
+  list.addEventListener('pointerenter', () => imgs.forEach((i) => { i.loading = 'eager'; }), { once: true });
+
+  // Work out what's under the pointer from its last position. Scrolling moves the
+  // page under a still mouse without firing mouseenter/mouseleave, so we re-check on
+  // every scroll too; otherwise the photo would stay frozen on screen.
+  let px = -1, py = -1, current = null;
+  function show(btn) {
+    if (btn === current) return;
+    current = btn;
+    if (!btn) { gsap.to(box, { opacity: 0, scale: 0.6, duration: 0.3, overwrite: 'auto' }); return; }
+    imgs.forEach((i) => {
+      const on = i.dataset.for === btn.dataset.service;
+      i.classList.toggle('on', on);
+      if (on) gsap.fromTo(i, { scale: 1.25 }, { scale: 1, duration: 0.8, ease: 'power3.out' });
     });
-  });
-  list.addEventListener('mouseleave', () => gsap.to(box, { opacity: 0, scale: 0.6, duration: 0.3 }));
+    gsap.to(box, { opacity: 1, scale: 1, rotate: gsap.utils.random(-6, 6), duration: 0.45, ease: 'back.out(1.6)', overwrite: 'auto' });
+  }
+  function sync() {
+    if (px < 0) return;
+    const el = document.elementFromPoint(px, py);
+    const btn = el && el.closest('[data-services] button');
+    show(btn && !dlg.open ? btn : null);
+  }
+  window.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    px = e.clientX; py = e.clientY;
+    xTo(px); yTo(py);
+    sync();
+  }, { passive: true });
+  window.addEventListener('scroll', sync, { passive: true });
+  document.addEventListener('mouseleave', () => { px = -1; show(null); });
+  document.addEventListener('click', (e) => { if (e.target.closest('[data-book]')) show(null); });
 }
 
 /* ---------------- Gallery: vertical scroll drives a horizontal photo strip ---------------- */
@@ -230,7 +250,6 @@ $('[data-newsletter]').addEventListener('submit', (e) => {
 });
 
 /* ---------------- Booking: 3-step funnel ---------------- */
-const dlg = $('[data-booking]');
 const state = { service: null, shop: null, day: null, time: null, step: 1 };
 const choice = (label, sub, attrs = '') => `<button type="button" class="choice" aria-pressed="false" ${attrs}><strong>${label}</strong>${sub ? `<small>${sub}</small>` : ''}</button>`;
 $('[data-choices="service"]').innerHTML = SERVICES.map((s) => choice(s.name, `${s.price} &middot; ${s.mins} min`, `data-v="${s.name}"`)).join('');
