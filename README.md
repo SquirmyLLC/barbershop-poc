@@ -1,6 +1,29 @@
 # Barbershop POC
 
-A modern, 3D, interactive barbershop website (work in progress).
+A modern, 3D, interactive barbershop website (work in progress). The layout takes its cues from a friendly neighborhood barbershop site: big bold hero, simple service list, reviews, locations and mixtapes. Everything else is original: video loops, scroll animation, an interactive 3D barber pole and a 3-step booking flow.
+
+## Run it
+
+```bash
+npm install
+npm run dev      # local dev server
+npm run build    # production build in dist/
+```
+
+## What's in it
+
+- **Video hero** that plays a looping clip behind a split-letter headline animation.
+- **Interactive 3D barber pole** (three.js). Drag, swipe or use the arrow keys to spin it. It loads lazily and pauses when it's offscreen.
+- **Scroll animation** (GSAP ScrollTrigger + Lenis smooth scroll): a scroll-speed marquee, staggered reveals, counters, and a video card that grows to full screen.
+- **Service list with hover video previews** that follow the cursor on desktop.
+- **3-step booking dialog**: service, then shop, then time. It's front-end only for now.
+- Respects `prefers-reduced-motion`, keyboard focus, and mobile layouts down to 360px.
+
+## Placeholder content
+
+The brand name "Fresh Cut Co.", prices, shop addresses, reviews and mixtapes are placeholders in `src/data.js` and `index.html`. The reviews are samples written for layout and must be replaced with real ones before launch.
+
+The videos in `public/videos/` are rendered 3D loops, made by `npm run videos` (`tools/render-videos.mjs`, which needs ffmpeg). Swap in real shop footage by replacing `pole.mp4`, `scissors.mp4` and `strands.mp4` and their `.jpg` posters. Use short 1280x720 H.264 clips with no audio, 2 MB or less each.
 
 ## Design tooling
 
