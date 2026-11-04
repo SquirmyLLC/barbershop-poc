@@ -15,7 +15,9 @@ npm run build    # production build in dist/
 - **Video hero** that plays a looping clip behind a split-letter headline animation.
 - **Interactive 3D barber pole** (three.js). Drag, swipe or use the arrow keys to spin it. It loads lazily and pauses when it's offscreen.
 - **Scroll animation** (GSAP ScrollTrigger + Lenis smooth scroll): a scroll-speed marquee, staggered reveals, counters, and a video card that grows to full screen.
-- **Service list with hover video previews** that follow the cursor on desktop.
+- **Service list with hover photo previews** that follow the cursor on desktop.
+- **"Inside the shop" gallery**: scrolling down slides a strip of shop photos sideways, with parallax inside each frame. On phones it becomes a swipeable strip.
+- **Location cards** reveal a shop photo from the pointer position on hover.
 - **3-step booking dialog**: service, then shop, then time. It's front-end only for now.
 - Respects `prefers-reduced-motion`, keyboard focus, and mobile layouts down to 360px.
 
@@ -37,3 +39,7 @@ Try it from the repo root (Python 3 required):
 python3 .claude/skills/ui-ux-pro-max/scripts/search.py "barbershop grooming booking premium" --design-system -p "Barbershop"
 python3 .claude/skills/ui-ux-pro-max/scripts/search.py "3d hero performance mobile" --stack threejs
 ```
+
+### Photos
+
+Shop photos are free [Unsplash](https://unsplash.com) images (Unsplash License; paid Unsplash+ photos are not used), listed with photographer credits in `src/data.js` and loaded straight from Unsplash's image CDN. Replace them with photos of the real shop when you have them.

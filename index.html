@@ -113,18 +113,14 @@
         <p class="lead" data-reveal>No upsells, no pressure. Pick a cut, pick a time, and leave looking sharp.</p>
       </div>
       <ul class="service-list" data-services>
-        <li><button type="button" data-book data-service="Short cut" data-preview="scissors"><span class="s-num">01</span><span class="s-name">Short cut</span><span class="s-desc">Scissor or clipper, finished with a hot towel</span><span class="s-price">$35</span><span class="s-arrow" aria-hidden="true">&rarr;</span></button></li>
-        <li><button type="button" data-book data-service="Skin fade" data-preview="strands"><span class="s-num">02</span><span class="s-name">Skin fade</span><span class="s-desc">Down to the skin, blended smooth</span><span class="s-price">$40</span><span class="s-arrow" aria-hidden="true">&rarr;</span></button></li>
-        <li><button type="button" data-book data-service="Long cut" data-preview="scissors"><span class="s-num">03</span><span class="s-name">Long cut</span><span class="s-desc">Shape and texture for longer hair</span><span class="s-price">$45</span><span class="s-arrow" aria-hidden="true">&rarr;</span></button></li>
-        <li><button type="button" data-book data-service="Buzz cut" data-preview="pole"><span class="s-num">04</span><span class="s-name">Buzz cut</span><span class="s-desc">One guard all over, clean edges</span><span class="s-price">$25</span><span class="s-arrow" aria-hidden="true">&rarr;</span></button></li>
-        <li><button type="button" data-book data-service="Beard trim" data-preview="strands"><span class="s-num">05</span><span class="s-name">Beard trim</span><span class="s-desc">Shape, line up, and a warm towel</span><span class="s-price">$20</span><span class="s-arrow" aria-hidden="true">&rarr;</span></button></li>
-        <li><button type="button" data-book data-service="Kid cut" data-preview="pole"><span class="s-num">06</span><span class="s-name">Kid cut</span><span class="s-desc">Twelve and under, lollipop included</span><span class="s-price">$25</span><span class="s-arrow" aria-hidden="true">&rarr;</span></button></li>
+        <li><button type="button" data-book data-service="Short cut"><span class="s-num">01</span><span class="s-name">Short cut</span><span class="s-desc">Scissor or clipper, finished with a hot towel</span><span class="s-price">$35</span><span class="s-arrow" aria-hidden="true">&rarr;</span></button></li>
+        <li><button type="button" data-book data-service="Skin fade"><span class="s-num">02</span><span class="s-name">Skin fade</span><span class="s-desc">Down to the skin, blended smooth</span><span class="s-price">$40</span><span class="s-arrow" aria-hidden="true">&rarr;</span></button></li>
+        <li><button type="button" data-book data-service="Long cut"><span class="s-num">03</span><span class="s-name">Long cut</span><span class="s-desc">Shape and texture for longer hair</span><span class="s-price">$45</span><span class="s-arrow" aria-hidden="true">&rarr;</span></button></li>
+        <li><button type="button" data-book data-service="Buzz cut"><span class="s-num">04</span><span class="s-name">Buzz cut</span><span class="s-desc">One guard all over, clean edges</span><span class="s-price">$25</span><span class="s-arrow" aria-hidden="true">&rarr;</span></button></li>
+        <li><button type="button" data-book data-service="Beard trim"><span class="s-num">05</span><span class="s-name">Beard trim</span><span class="s-desc">Shape, line up, and a warm towel</span><span class="s-price">$20</span><span class="s-arrow" aria-hidden="true">&rarr;</span></button></li>
+        <li><button type="button" data-book data-service="Kid cut"><span class="s-num">06</span><span class="s-name">Kid cut</span><span class="s-desc">Twelve and under, lollipop included</span><span class="s-price">$25</span><span class="s-arrow" aria-hidden="true">&rarr;</span></button></li>
       </ul>
-      <div class="preview" data-preview-box aria-hidden="true">
-        <video muted loop playsinline preload="none" data-preview-video="scissors" poster="/videos/scissors.jpg"><source src="/videos/scissors.mp4" type="video/mp4" /></video>
-        <video muted loop playsinline preload="none" data-preview-video="strands" poster="/videos/strands.jpg"><source src="/videos/strands.mp4" type="video/mp4" /></video>
-        <video muted loop playsinline preload="none" data-preview-video="pole" poster="/videos/pole.jpg"><source src="/videos/pole.mp4" type="video/mp4" /></video>
-      </div>
+      <div class="preview" data-preview-box aria-hidden="true"></div>
     </section>
 
     <!-- VIDEO FEATURE: card grows to full screen on scroll -->
@@ -139,6 +135,17 @@
           <span>Every cut</span>
           <span class="accent">is a craft.</span>
         </h2>
+      </div>
+    </section>
+
+    <!-- GALLERY: horizontal photo strip driven by vertical scroll -->
+    <section class="gallery" data-gallery aria-labelledby="gallery-title">
+      <div class="gallery-pin" data-gallery-pin>
+        <div class="gallery-head">
+          <p class="eyebrow">Inside the shop</p>
+          <h2 class="h2" id="gallery-title">Come for the cut. <br />Stay for the vibe.</h2>
+        </div>
+        <div class="gallery-track" data-gallery-track></div>
       </div>
     </section>
 
@@ -207,7 +214,7 @@
     </div>
     <div class="footer-bottom">
       <span>&copy; <span data-year></span> Fresh Cut Co.</span>
-      <span class="muted">Placeholder brand and details for the prototype.</span>
+      <span class="muted">Placeholder brand and details for the prototype. Photos from <a href="https://unsplash.com/?utm_source=fresh_cut_co&amp;utm_medium=referral">Unsplash</a> by <span data-photo-credits></span>.</span>
     </div>
   </footer>
 

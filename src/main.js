@@ -4,7 +4,7 @@ import './style.css';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
-import { SHOPS, REVIEWS, MIXTAPES, SERVICES } from './data.js';
+import { SHOPS, REVIEWS, MIXTAPES, SERVICES, PHOTOS, GALLERY, SERVICE_PHOTOS, photoUrl } from './data.js';
 
 gsap.registerPlugin(ScrollTrigger);
 document.documentElement.classList.add('js');
@@ -31,6 +31,7 @@ const half = Math.ceil(REVIEWS.length / 2);
 });
 
 $('[data-loc-grid]').innerHTML = SHOPS.map((s) => `<li><a class="loc" href="#top" data-book data-shop="${s.name}">
+  <img class="loc-img" src="${photoUrl(s.photo, 800)}" alt="" loading="lazy" decoding="async" width="800" height="533" />
   <h3>${s.name}</h3>
   <div class="loc-meta"><span>${s.address}<br/>${s.hours}</span><span class="loc-open">Open now</span></div>
 </a></li>`).join('');
@@ -47,6 +48,16 @@ $$('.mix').forEach((b) => b.addEventListener('click', () => {
 }));
 
 $('[data-year]').textContent = new Date().getFullYear();
+
+$('[data-gallery-track]').innerHTML = GALLERY.map((g, i) => {
+  const p = PHOTOS[g.photo];
+  return `<figure class="g-card${i % 2 ? ' low' : ''}">
+    <div class="g-frame"><img src="${photoUrl(g.photo, 1400)}" alt="${p.alt}" loading="lazy" decoding="async" width="1400" height="933" /></div>
+    <figcaption><span>${g.caption}</span><a href="${p.page}?utm_source=fresh_cut_co&utm_medium=referral" target="_blank" rel="noopener">Photo: ${p.by}</a></figcaption>
+  </figure>`;
+}).join('');
+const used = new Set([...GALLERY.map((g) => g.photo), ...SHOPS.map((s) => s.photo), ...Object.values(SERVICE_PHOTOS)]);
+$('[data-photo-credits]').innerHTML = [...new Set([...used].map((k) => PHOTOS[k].by))].join(', ');
 
 /* ---------------- Smooth scroll ---------------- */
 let lenis;
@@ -143,28 +154,46 @@ if (!reduced) {
     .to('[data-reel-title]', { scale: 1.08, duration: 0.4 }, '>');
 }
 
-/* ---------------- Service hover video preview ---------------- */
+/* ---------------- Service hover photo preview (follows the cursor) ---------------- */
 const box = $('[data-preview-box]');
-const vids = Object.fromEntries($$('[data-preview-video]', box).map((v) => [v.dataset.previewVideo, v]));
 if (finePointer && !reduced) {
+  box.innerHTML = Object.entries(SERVICE_PHOTOS).map(([svc, key]) => `<img src="${photoUrl(key, 640)}" alt="" data-for="${svc}" loading="lazy" decoding="async" width="640" height="480" />`).join('');
+  const imgs = $$('img', box);
   const xTo = gsap.quickTo(box, 'x', { duration: 0.5, ease: 'power3' });
   const yTo = gsap.quickTo(box, 'y', { duration: 0.5, ease: 'power3' });
   const list = $('[data-services]');
+  list.addEventListener('mouseenter', () => imgs.forEach((i) => { i.loading = 'eager'; }), { once: true });
   list.addEventListener('mousemove', (e) => { xTo(e.clientX); yTo(e.clientY); });
   $$('button', list).forEach((b) => {
     b.addEventListener('mouseenter', () => {
-      Object.entries(vids).forEach(([k, v]) => {
-        const on = k === b.dataset.preview;
-        v.classList.toggle('on', on);
-        if (on) { if (v.preload === 'none') { v.preload = 'auto'; v.load(); } v.play().catch(() => {}); } else v.pause();
+      imgs.forEach((i) => {
+        const on = i.dataset.for === b.dataset.service;
+        i.classList.toggle('on', on);
+        if (on) gsap.fromTo(i, { scale: 1.25 }, { scale: 1, duration: 0.8, ease: 'power3.out' });
       });
       gsap.to(box, { opacity: 1, scale: 1, rotate: gsap.utils.random(-6, 6), duration: 0.45, ease: 'back.out(1.6)' });
     });
   });
-  list.addEventListener('mouseleave', () => {
-    gsap.to(box, { opacity: 0, scale: 0.6, duration: 0.3 });
-    Object.values(vids).forEach((v) => v.pause());
+  list.addEventListener('mouseleave', () => gsap.to(box, { opacity: 0, scale: 0.6, duration: 0.3 }));
+}
+
+/* ---------------- Gallery: vertical scroll drives a horizontal photo strip ---------------- */
+const gTrack = $('[data-gallery-track]');
+const mmGallery = gsap.matchMedia();
+mmGallery.add('(min-width: 721px) and (prefers-reduced-motion: no-preference)', () => {
+  const dist = () => gTrack.scrollWidth - window.innerWidth;
+  const strip = gsap.to(gTrack, {
+    x: () => -dist(), ease: 'none',
+    scrollTrigger: { trigger: '[data-gallery]', pin: '[data-gallery-pin]', start: 'top top', end: () => `+=${dist()}`, scrub: 0.6, invalidateOnRefresh: true },
   });
+  // each photo drifts inside its frame for depth, and cards tilt in as they enter
+  $$('.g-card', gTrack).forEach((card) => {
+    gsap.fromTo($('img', card), { xPercent: -10 }, { xPercent: 10, ease: 'none', scrollTrigger: { trigger: card, containerAnimation: strip, start: 'left right', end: 'right left', scrub: true } });
+    gsap.from(card, { rotate: 4, y: 60, opacity: 0.3, ease: 'power2.out', scrollTrigger: { trigger: card, containerAnimation: strip, start: 'left 95%', end: 'left 55%', scrub: true } });
+  });
+});
+if (!reduced) {
+  gsap.from('.gallery-head > *', { y: 30, opacity: 0, duration: 0.8, stagger: 0.1, ease: 'power3.out', scrollTrigger: { trigger: '[data-gallery]', start: 'top 80%' } });
 }
 
 /* ---------------- Location cards: reveal follows the pointer ---------------- */
