@@ -102,13 +102,82 @@ $$('[data-split]').forEach((el) => {
 if (!reduced) {
   const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
   tl.from('.hero-video', { scale: 1.3, opacity: 0, duration: 2.2, ease: 'power2.out' })
+    .from('[data-hero-spot]', { opacity: 0, duration: 1.6, ease: 'power2.out' }, 0.4)
     .from('.hero-title .char', { yPercent: 115, rotate: 6, duration: 1.1, stagger: 0.028 }, 0.2)
     .from('[data-hero-fade]', { y: 24, opacity: 0, duration: 0.9, stagger: 0.12 }, 0.7)
     .from('.nav > *', { y: -20, opacity: 0, duration: 0.8, stagger: 0.08 }, 0.5);
 
   // hero parallax as you scroll away
-  gsap.to('.hero-video', { yPercent: 18, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+  // video drifts down, zooms in and dims as the next section takes over
+  gsap.to('.hero-video', { yPercent: 14, scale: 1.18, opacity: 0.35, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
   gsap.to('.hero-inner', { yPercent: -25, opacity: 0.2, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+}
+
+/* ---------------- Hero: right-sized video + spotlight + depth tilt ---------------- */
+{
+  const hero = $('.hero');
+  const vid = $('.hero-video');
+  const media = $('[data-hero-media]');
+  const spot = $('[data-hero-spot]');
+  const title = $('.hero-title');
+
+  // Portrait screens get the tall cut, landscape screens the wide one
+  const portrait = window.matchMedia('(max-aspect-ratio: 1/1)');
+  const pickCut = () => {
+    const k = portrait.matches ? 'tall' : 'wide';
+    if (vid.dataset.cut === k) return;
+    vid.dataset.cut = k;
+    vid.poster = vid.dataset[`${k}Poster`];
+    vid.src = vid.dataset[k];
+    if (!reduced) vid.play().catch(() => {});
+  };
+  pickCut();
+  portrait.addEventListener('change', pickCut);
+
+  if (!reduced) {
+    const pos = { x: 0.72, y: 0.42 }; // spotlight position, 0..1 of the hero
+    const render = () => { spot.style.setProperty('--sx', `${pos.x * 100}%`); spot.style.setProperty('--sy', `${pos.y * 100}%`); };
+    const spotX = gsap.quickTo(pos, 'x', { duration: 0.9, ease: 'power3', onUpdate: render });
+    const spotY = gsap.quickTo(pos, 'y', { duration: 0.9, ease: 'power3', onUpdate: render });
+    const mx = gsap.quickTo(media, 'x', { duration: 1.2, ease: 'power3' });
+    const my = gsap.quickTo(media, 'y', { duration: 1.2, ease: 'power3' });
+    const rx = gsap.quickTo(title, 'rotationX', { duration: 1, ease: 'power3' });
+    const ry = gsap.quickTo(title, 'rotationY', { duration: 1, ease: 'power3' });
+    // u, v in -0.5..0.5: video moves against the pointer, headline tilts toward it
+    const depth = (u, v) => { mx(-u * 40); my(-v * 28); ry(u * 10); rx(-v * 8); };
+
+    let drift = null;
+    const startDrift = () => {
+      if (drift) return;
+      // no cursor: the spotlight wanders slowly on its own
+      drift = gsap.timeline({ repeat: -1, defaults: { duration: 3.5, ease: 'sine.inOut' } })
+        .to(pos, { x: 0.35, y: 0.3, onUpdate: render })
+        .to(pos, { x: 0.65, y: 0.65, onUpdate: render })
+        .to(pos, { x: 0.8, y: 0.35, onUpdate: render })
+        .to(pos, { x: 0.5, y: 0.5, onUpdate: render });
+    };
+    const stopDrift = () => { drift?.kill(); drift = null; };
+
+    if (finePointer) {
+      hero.addEventListener('pointermove', (e) => {
+        const r = hero.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+        stopDrift();
+        spotX(x); spotY(y);
+        depth(x - 0.5, y - 0.5);
+      });
+      hero.addEventListener('pointerleave', () => { depth(0, 0); startDrift(); });
+    } else {
+      startDrift();
+      // tilt with the phone where the browser allows it without a prompt
+      window.addEventListener('deviceorientation', (e) => {
+        if (e.gamma == null) return;
+        depth(gsap.utils.clamp(-0.5, 0.5, e.gamma / 60), gsap.utils.clamp(-0.5, 0.5, (e.beta - 45) / 60));
+      }, { passive: true });
+    }
+    // pause the drift while the hero is offscreen
+    ScrollTrigger.create({ trigger: hero, start: 'top top', end: 'bottom top', onLeave: () => drift?.pause(), onEnterBack: () => drift?.resume() });
+  }
 }
 
 /* ---------------- Marquee: always moving, speeds up with scroll ---------------- */

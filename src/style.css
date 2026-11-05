@@ -97,7 +97,13 @@ button { font: inherit; color: inherit; }
 
 /* ---------- Hero ---------- */
 .hero { position: relative; min-height: 100svh; display: flex; flex-direction: column; justify-content: flex-end; padding: 120px var(--gutter) 40px; overflow: hidden; isolation: isolate; }
-.hero-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; transform: scale(1.08); }
+.hero-media { position: absolute; inset: -3%; z-index: -3; will-change: transform; }
+.hero-video { width: 100%; height: 100%; object-fit: cover; }
+/* Spotlight: the video sits dim; a soft circle of full brightness follows the cursor */
+.hero-spot { position: absolute; inset: 0; z-index: -2; pointer-events: none;
+  background: radial-gradient(circle clamp(220px, 28vw, 460px) at var(--sx, 72%) var(--sy, 42%), rgba(14,12,11,0) 0%, rgba(14,12,11,0.25) 45%, rgba(14,12,11,0.7) 100%); }
+.hero-inner { perspective: 1200px; }
+.hero-title { transform-style: preserve-3d; will-change: transform; }
 .hero-shade { position: absolute; inset: 0; z-index: -1; background:
   linear-gradient(90deg, rgba(14,12,11,0.92) 0%, rgba(14,12,11,0.55) 45%, rgba(14,12,11,0.1) 75%),
   linear-gradient(0deg, rgba(14,12,11,1) 0%, rgba(14,12,11,0) 35%); }

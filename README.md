@@ -12,7 +12,7 @@ npm run build    # production build in dist/
 
 ## What's in it
 
-- **Video hero** that plays a looping clip behind a split-letter headline animation.
+- **Interactive video hero**: the shop clip plays dimmed behind the headline, a spotlight follows the cursor, the video shifts and the headline tilts with the mouse (or phone tilt), and it zooms and fades as you scroll. Wide and tall cuts (`hero-wide.mp4`, `hero-tall.mp4`) are chosen by screen shape.
 - **Interactive 3D barber pole** (three.js). Drag, swipe or use the arrow keys to spin it. It loads lazily and pauses when it's offscreen.
 - **Scroll animation** (GSAP ScrollTrigger + Lenis smooth scroll): a scroll-speed marquee, staggered reveals, counters, and a video card that grows to full screen.
 - **Service list with hover photo previews** that follow the cursor on desktop.
