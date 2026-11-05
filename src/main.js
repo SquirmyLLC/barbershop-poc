@@ -101,7 +101,7 @@ $$('[data-split]').forEach((el) => {
 });
 if (!reduced) {
   const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
-  tl.from('.hero-video', { scale: 1.3, opacity: 0, duration: 2.2, ease: 'power2.out' })
+  tl.from('[data-hero-media]', { scale: 1.3, opacity: 0, duration: 2.2, ease: 'power2.out' })
     .from('[data-hero-spot]', { opacity: 0, duration: 1.6, ease: 'power2.out' }, 0.4)
     .from('.hero-title .char', { yPercent: 115, rotate: 6, duration: 1.1, stagger: 0.028 }, 0.2)
     .from('[data-hero-fade]', { y: 24, opacity: 0, duration: 0.9, stagger: 0.12 }, 0.7)
@@ -109,7 +109,8 @@ if (!reduced) {
 
   // hero parallax as you scroll away
   // video drifts down, zooms in and dims as the next section takes over
-  gsap.to('.hero-video', { yPercent: 14, scale: 1.18, opacity: 0.35, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
+  // explicit start values so scrolling back to the top always restores the video fully
+  gsap.fromTo('.hero-video', { yPercent: 0, scale: 1, opacity: 1 }, { yPercent: 14, scale: 1.18, opacity: 0.35, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
   gsap.to('.hero-inner', { yPercent: -25, opacity: 0.2, ease: 'none', scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: true } });
 }
 
